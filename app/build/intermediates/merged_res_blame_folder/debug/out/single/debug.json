@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "/home/inshal/.gradle/daemon/7.5/com.inshal.hello.app-merged_res-5:/layout_activity_main.xml.flat",
+        "source": "/home/inshal/.gradle/daemon/7.5/com.inshal.hello.app-main-7:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.inshal.hello.app-merged_res-5:/drawable-nodpi_atari_small_nodpi.png.flat",
+        "source": "com.inshal.hello.app-main-7:/drawable-nodpi/atari_small_nodpi.png"
+    },
+    {
+        "merged": "com.inshal.hello.app-merged_res-5:/drawable_atari_small.png.flat",
+        "source": "com.inshal.hello.app-main-7:/drawable/atari_small.png"
+    }
+]

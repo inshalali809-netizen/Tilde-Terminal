@@ -1,0 +1,8 @@
+com.inshal.hello.app-pngs-0 /home/inshal/dev/hello-android/app/build/generated/res/pngs/debug
+com.inshal.hello.app-resValues-1 /home/inshal/dev/hello-android/app/build/generated/res/resValues/debug
+com.inshal.hello.app-rs-2 /home/inshal/dev/hello-android/app/build/generated/res/rs/debug
+com.inshal.hello.app-mergeDebugResources-3 /home/inshal/dev/hello-android/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir
+com.inshal.hello.app-mergeDebugResources-4 /home/inshal/dev/hello-android/app/build/intermediates/incremental/debug/mergeDebugResources/stripped.dir
+com.inshal.hello.app-merged_res-5 /home/inshal/dev/hello-android/app/build/intermediates/merged_res/debug
+com.inshal.hello.app-debug-6 /home/inshal/dev/hello-android/app/src/debug/res
+com.inshal.hello.app-main-7 /home/inshal/dev/hello-android/app/src/main/res

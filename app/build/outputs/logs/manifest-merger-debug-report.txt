@@ -1,0 +1,67 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml:2:1-21:12
+INJECTED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml:2:1-21:12
+INJECTED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml:2:1-21:12
+INJECTED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml:2:1-21:12
+INJECTED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml:2:1-21:12
+INJECTED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml:2:1-21:12
+INJECTED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml:2:1-21:12
+	package
+		ADDED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml:3:5-31
+		INJECTED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml
+		INJECTED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml
+	android:versionName
+		INJECTED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml
+		ADDED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml:2:1-21:12
+		INJECTED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml
+	android:versionCode
+		INJECTED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml
+		ADDED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml:2:1-21:12
+		INJECTED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml:2:11-69
+uses-permission#android.permission.READ_EXTERNAL_STORAGE
+ADDED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml:5:3-78
+	android:name
+		ADDED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml:5:20-75
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml:6:5-81
+	android:name
+		ADDED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml:6:22-78
+application
+ADDED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml:8:5-19:19
+	android:label
+		ADDED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml:9:9-41
+	android:allowBackup
+		ADDED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml:10:9-35
+activity#com.inshal.hello.MainActivity
+ADDED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml:11:9-18:20
+	android:label
+		ADDED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml:13:13-45
+	android:name
+		ADDED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml:12:13-41
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml:14:13-17:29
+action#android.intent.action.MAIN
+ADDED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml:15:17-69
+	android:name
+		ADDED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml:15:25-66
+category#android.intent.category.LAUNCHER
+ADDED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml:16:17-77
+	android:name
+		ADDED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml:16:27-74
+uses-sdk
+INJECTED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml
+INJECTED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml
+INJECTED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml
+INJECTED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml
+		ADDED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml
+		INJECTED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml
+		ADDED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml
+		INJECTED from /home/inshal/dev/hello-android/app/src/main/AndroidManifest.xml
