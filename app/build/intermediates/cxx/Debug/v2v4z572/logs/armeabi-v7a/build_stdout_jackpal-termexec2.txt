@@ -1,2 +1,0 @@
-ninja: Entering directory `/home/inshal/dev/hello-android/app/.cxx/Debug/v2v4z572/armeabi-v7a'
-ninja: no work to do.

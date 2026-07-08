@@ -1,1 +1,0 @@
-/home/inshal/dev/hello-android/app/src/main/cpp/CMakeLists.txt

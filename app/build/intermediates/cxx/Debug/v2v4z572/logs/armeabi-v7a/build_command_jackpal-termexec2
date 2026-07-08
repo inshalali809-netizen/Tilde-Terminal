@@ -1,4 +1,0 @@
-/home/inshal/android-sdk/cmake/3.22.1/bin/ninja \
-  -C \
-  /home/inshal/dev/hello-android/app/.cxx/Debug/v2v4z572/armeabi-v7a \
-  jackpal-termexec2

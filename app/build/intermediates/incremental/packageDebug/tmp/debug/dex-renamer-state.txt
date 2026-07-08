@@ -1,4 +1,0 @@
-#Wed Jul 08 02:08:36 PKT 2026
-base.0=/home/inshal/dev/hello-android/app/build/intermediates/dex/debug/mergeDexDebug/classes.dex
-renamed.0=classes.dex
-path.0=classes.dex

@@ -1,0 +1,8 @@
+build/
+.gradle/
+.cxx/
+*.apk
+local.properties
+.idea/
+*.iml
+app/src/main/assets/busybox
