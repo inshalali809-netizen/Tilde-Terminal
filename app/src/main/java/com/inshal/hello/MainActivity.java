@@ -40,6 +40,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         final File binDir = setupBusybox();
+        setupResolve(binDir);
 
         try {
             ptmxFd = ParcelFileDescriptor.open(
@@ -192,10 +193,8 @@ public class MainActivity extends Activity {
 
     /**
      * Extracts and installs busybox on first launch only. On subsequent
-     * launches, detects the previous install (checking for a known applet
-     * symlink) and skips straight to returning the existing bin folder —
-     * avoids a ~2MB file copy and a full busybox subprocess spawn on every
-     * single app open.
+     * launches, detects the previous install and skips straight to
+     * returning the existing bin folder.
      */
     private File setupBusybox() {
         File filesDir = getFilesDir();
@@ -252,6 +251,36 @@ public class MainActivity extends Activity {
         }
 
         return binDir;
+    }
+
+    /**
+     * Extracts the "resolve" native helper (dynamically linked against
+     * Android's real bionic libc) into the same bin folder as busybox,
+     * so it's on PATH automatically. Unlike busybox's DNS handling,
+     * this correctly resolves hostnames via Android's real netd service.
+     */
+    private void setupResolve(File binDir) {
+        File resolveFile = new File(binDir, "resolve");
+        if (resolveFile.exists()) {
+            return;
+        }
+
+        try {
+            AssetManager assets = getAssets();
+            InputStream in = assets.open("resolve");
+            OutputStream out = new FileOutputStream(resolveFile);
+            byte[] buffer = new byte[8192];
+            int read;
+            while ((read = in.read(buffer)) != -1) {
+                out.write(buffer, 0, read);
+            }
+            in.close();
+            out.close();
+
+            resolveFile.setExecutable(true, false);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

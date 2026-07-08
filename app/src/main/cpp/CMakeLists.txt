@@ -17,3 +17,5 @@ target_link_libraries(
     jackpal-termexec2
     ${log-lib}
 )
+
+add_executable(resolve resolve.c)
