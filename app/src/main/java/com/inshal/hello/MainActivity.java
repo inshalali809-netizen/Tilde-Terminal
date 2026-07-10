@@ -40,8 +40,9 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         final File binDir = setupBusybox();
-        setupResolve(binDir);
-
+        setupAsset(binDir, "resolve");
+        setupAsset(binDir, "curl");
+        setupCaCert(binDir);
         try {
             ptmxFd = ParcelFileDescriptor.open(
                     new File("/dev/ptmx"),
@@ -154,6 +155,8 @@ public class MainActivity extends Activity {
                     exec.environment().put("PATH", newPath);
                     exec.environment().put("HOME", HOME_DIR);
                     exec.environment().put("PS1", "$PWD $ ");
+                    exec.environment().put("ENV", HOME_DIR + "/.ashrc");
+                    exec.environment().put("CURL_CA_BUNDLE", binDir.getAbsolutePath() + "/cacert.pem");
                     shellPid = exec.start(ptmxFd);
 
                     Thread.sleep(300);
@@ -254,21 +257,20 @@ public class MainActivity extends Activity {
     }
 
     /**
-     * Extracts the "resolve" native helper (dynamically linked against
-     * Android's real bionic libc) into the same bin folder as busybox,
-     * so it's on PATH automatically. Unlike busybox's DNS handling,
-     * this correctly resolves hostnames via Android's real netd service.
+     * Generic helper: extracts a single executable asset (resolve, curl,
+     * future tools) into the shared bin folder, once, and marks it
+     * executable. Skips if already present from a previous launch.
      */
-    private void setupResolve(File binDir) {
-        File resolveFile = new File(binDir, "resolve");
-        if (resolveFile.exists()) {
+    private void setupAsset(File binDir, String assetName) {
+        File targetFile = new File(binDir, assetName);
+        if (targetFile.exists()) {
             return;
         }
 
         try {
             AssetManager assets = getAssets();
-            InputStream in = assets.open("resolve");
-            OutputStream out = new FileOutputStream(resolveFile);
+            InputStream in = assets.open(assetName);
+            OutputStream out = new FileOutputStream(targetFile);
             byte[] buffer = new byte[8192];
             int read;
             while ((read = in.read(buffer)) != -1) {
@@ -277,7 +279,33 @@ public class MainActivity extends Activity {
             in.close();
             out.close();
 
-            resolveFile.setExecutable(true, false);
+            targetFile.setExecutable(true, false);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+          /**
+     * Extracts the CA certificate bundle (needed for curl's HTTPS
+     * verification, since a static binary has no built-in trust store)
+     * and sets CURL_CA_BUNDLE so curl finds it automatically.
+     */
+    private void setupCaCert(File binDir) {
+        File certFile = new File(binDir, "cacert.pem");
+        if (certFile.exists()) {
+            return;
+        }
+        try {
+            AssetManager assets = getAssets();
+            InputStream in = assets.open("cacert.pem");
+            OutputStream out = new FileOutputStream(certFile);
+            byte[] buffer = new byte[8192];
+            int read;
+            while ((read = in.read(buffer)) != -1) {
+                out.write(buffer, 0, read);
+            }
+            in.close();
+            out.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
