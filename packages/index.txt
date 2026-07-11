@@ -1,0 +1,1 @@
+curl|bin|github.com|/moparisthebest/static-curl/releases/latest/download/curl-armv7|curl
