@@ -11,6 +11,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
@@ -42,7 +43,8 @@ public class MainActivity extends Activity {
         final File binDir = setupBusybox();
         setupAsset(binDir, "resolve");
         setupAsset(binDir, "curl");
-        setupCaCert(binDir);
+        final File terminfoDir = setupTerminfo();
+
         try {
             ptmxFd = ParcelFileDescriptor.open(
                     new File("/dev/ptmx"),
@@ -53,7 +55,14 @@ public class MainActivity extends Activity {
             return;
         }
 
-        TermSession session = new TermSession();
+        final int ptyFd = ptmxFd.getFd();
+        TermSession session = new TermSession() {
+            @Override
+            public void updateSize(int columns, int rows) {
+                super.updateSize(columns, rows);
+                TermExec.setPtyWindowSize(ptyFd, rows, columns);
+            }
+        };
         session.setTermIn(new FileInputStream(ptmxFd.getFileDescriptor()));
         session.setTermOut(new FileOutputStream(ptmxFd.getFileDescriptor()));
         termSession = session;
@@ -77,13 +86,23 @@ public class MainActivity extends Activity {
             }
         });
 
-        LinearLayout root = new LinearLayout(this);
+        final LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
 
         LinearLayout.LayoutParams emulatorParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f
         );
         root.addView(emulatorView, emulatorParams);
+
+        // Force EmulatorView to properly re-measure and redraw whenever
+        // the window resizes (e.g. keyboard opening/closing), fixing the
+        // stale/floating-header glitch seen when the keyboard closes.
+        root.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                emulatorView.updateSize(true);
+            }
+        });
 
         HorizontalScrollView keyScroll = new HorizontalScrollView(this);
         keyScroll.setBackgroundColor(Color.parseColor("#1a1a1a"));
@@ -97,15 +116,37 @@ public class MainActivity extends Activity {
         addKeyButton(keyRow, "TAB", new Runnable() {
             public void run() { termSession.write(9); }
         });
-        addKeyButton(keyRow, "CTRL+C", new Runnable() {
-            public void run() { termSession.write(3); }
+
+        // Real toggle-style CTRL key, same behavior as Termux: tap to
+        // arm it (button turns red), then the next keypress is sent as
+        // a control character. Uses EmulatorView's own key listener via
+        // the small public methods added to the library.
+        final Button ctrlButton = new Button(this);
+        ctrlButton.setText("CTRL");
+        ctrlButton.setTextColor(Color.WHITE);
+        ctrlButton.setBackgroundColor(Color.parseColor("#2a2a2a"));
+        ctrlButton.setTextSize(12);
+        ctrlButton.setPadding(24, 8, 24, 8);
+        ctrlButton.setAllCaps(false);
+        ctrlButton.setMinWidth(0);
+        ctrlButton.setMinimumWidth(0);
+        ctrlButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                emulatorView.toggleCtrlKey();
+                if (emulatorView.isCtrlKeyActive()) {
+                    ctrlButton.setBackgroundColor(Color.parseColor("#c0392b"));
+                } else {
+                    ctrlButton.setBackgroundColor(Color.parseColor("#2a2a2a"));
+                }
+            }
         });
-        addKeyButton(keyRow, "CTRL+D", new Runnable() {
-            public void run() { termSession.write(4); }
-        });
-        addKeyButton(keyRow, "CTRL+Z", new Runnable() {
-            public void run() { termSession.write(26); }
-        });
+        LinearLayout.LayoutParams ctrlParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        ctrlParams.setMargins(4, 4, 4, 4);
+        keyRow.addView(ctrlButton, ctrlParams);
+
         addKeyButton(keyRow, "\u2191", new Runnable() {
             public void run() { termSession.write("\u001b[A"); }
         });
@@ -130,6 +171,9 @@ public class MainActivity extends Activity {
         addKeyButton(keyRow, "-", new Runnable() {
             public void run() { termSession.write("-"); }
         });
+        addKeyButton(keyRow, "_", new Runnable() {
+            public void run() { termSession.write("_"); }
+        });
         addKeyButton(keyRow, "|", new Runnable() {
             public void run() { termSession.write("|"); }
         });
@@ -146,6 +190,7 @@ public class MainActivity extends Activity {
         final String newPath = binDir.getAbsolutePath()
                 + ":/system/bin:/system/xbin";
         final String shellPath = new File(binDir, "ash").getAbsolutePath();
+        final String terminfoPath = terminfoDir.getAbsolutePath();
 
         new Thread(new Runnable() {
             @Override
@@ -156,7 +201,8 @@ public class MainActivity extends Activity {
                     exec.environment().put("HOME", HOME_DIR);
                     exec.environment().put("PS1", "$PWD $ ");
                     exec.environment().put("ENV", HOME_DIR + "/.ashrc");
-                    exec.environment().put("CURL_CA_BUNDLE", binDir.getAbsolutePath() + "/cacert.pem");
+                    exec.environment().put("TERMINFO", terminfoPath);
+                    exec.environment().put("TERM", "xterm");
                     shellPid = exec.start(ptmxFd);
 
                     Thread.sleep(300);
@@ -194,11 +240,6 @@ public class MainActivity extends Activity {
         parent.addView(button, params);
     }
 
-    /**
-     * Extracts and installs busybox on first launch only. On subsequent
-     * launches, detects the previous install and skips straight to
-     * returning the existing bin folder.
-     */
     private File setupBusybox() {
         File filesDir = getFilesDir();
         File busyboxFile = new File(filesDir, "busybox");
@@ -256,11 +297,6 @@ public class MainActivity extends Activity {
         return binDir;
     }
 
-    /**
-     * Generic helper: extracts a single executable asset (resolve, curl,
-     * future tools) into the shared bin folder, once, and marks it
-     * executable. Skips if already present from a previous launch.
-     */
     private void setupAsset(File binDir, String assetName) {
         File targetFile = new File(binDir, assetName);
         if (targetFile.exists()) {
@@ -285,30 +321,37 @@ public class MainActivity extends Activity {
         }
     }
 
-          /**
-     * Extracts the CA certificate bundle (needed for curl's HTTPS
-     * verification, since a static binary has no built-in trust store)
-     * and sets CURL_CA_BUNDLE so curl finds it automatically.
-     */
-    private void setupCaCert(File binDir) {
-        File certFile = new File(binDir, "cacert.pem");
-        if (certFile.exists()) {
-            return;
+    private File setupTerminfo() {
+        File filesDir = getFilesDir();
+        File terminfoDir = new File(filesDir, "terminfo");
+        File marker = new File(terminfoDir, "x/xterm");
+
+        if (marker.exists()) {
+            return terminfoDir;
         }
+
+        String[] entries = { "x/xterm", "d/dumb", "l/linux" };
         try {
             AssetManager assets = getAssets();
-            InputStream in = assets.open("cacert.pem");
-            OutputStream out = new FileOutputStream(certFile);
-            byte[] buffer = new byte[8192];
-            int read;
-            while ((read = in.read(buffer)) != -1) {
-                out.write(buffer, 0, read);
+            for (String entry : entries) {
+                File targetFile = new File(terminfoDir, entry);
+                targetFile.getParentFile().mkdirs();
+
+                InputStream in = assets.open("terminfo/" + entry);
+                OutputStream out = new FileOutputStream(targetFile);
+                byte[] buffer = new byte[4096];
+                int read;
+                while ((read = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, read);
+                }
+                in.close();
+                out.close();
             }
-            in.close();
-            out.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return terminfoDir;
     }
 
     @Override

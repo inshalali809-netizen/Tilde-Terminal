@@ -29,6 +29,9 @@ JNIEXPORT jint JNICALL Java_jackpal_androidterm_TermExec_createSubprocessInterna
 
     JNIEXPORT jint JNICALL Java_jackpal_androidterm_TermExec_waitFor
       (JNIEnv *, jclass, jint);
+
+    JNIEXPORT void JNICALL Java_jackpal_androidterm_TermExec_setPtyWindowSize
+      (JNIEnv *, jclass, jint, jint, jint);
 }
 
 #endif	/* !defined(_JACKPAL_PROCESS_H) */

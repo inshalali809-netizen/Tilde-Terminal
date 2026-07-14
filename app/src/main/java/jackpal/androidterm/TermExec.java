@@ -68,6 +68,8 @@ public class TermExec {
 
     public static native void sendSignal(int processId, int signal);
 
+  public static native void setPtyWindowSize(int fd, int rows, int cols);
+
     static int createSubprocess(ParcelFileDescriptor masterFd, String cmd, String[] args, String[] envVars) throws IOException {
         final int integerFd;
         if (Build.VERSION.SDK_INT >= 12) {

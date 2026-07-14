@@ -464,6 +464,16 @@ public class EmulatorView extends View implements GestureDetector.OnGestureListe
 
     private float mScrollRemainder;
     private TermKeyListener mKeyListener;
+  public void toggleCtrlKey() {
+        if (mKeyListener != null) {
+            boolean current = mKeyListener.isCtrlActive();
+            mKeyListener.handleControlKey(!current);
+        }
+    }
+
+    public boolean isCtrlKeyActive() {
+        return mKeyListener != null && mKeyListener.isCtrlActive();
+    }
 
     private String mImeBuffer = "";
 

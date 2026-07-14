@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <termios.h>
+#include <sys/ioctl.h>
 #include <signal.h>
 
 
@@ -182,6 +183,17 @@ JNIEXPORT void JNICALL Java_jackpal_androidterm_TermExec_sendSignal(JNIEnv *env,
     jint procId, jint signal)
 {
     kill(procId, signal);
+}
+
+JNIEXPORT void JNICALL Java_jackpal_androidterm_TermExec_setPtyWindowSize(JNIEnv *env, jclass clazz,
+    jint fd, jint rows, jint cols)
+{
+    struct winsize ws;
+    ws.ws_row = (unsigned short) rows;
+    ws.ws_col = (unsigned short) cols;
+    ws.ws_xpixel = 0;
+    ws.ws_ypixel = 0;
+    ioctl(fd, TIOCSWINSZ, &ws);
 }
 
 JNIEXPORT jint JNICALL Java_jackpal_androidterm_TermExec_waitFor(JNIEnv *env, jclass clazz, jint procId) {
