@@ -1,3 +1,6 @@
 curl|bin|github.com|/moparisthebest/static-curl/releases/latest/download/curl-armv7|curl
 nano|bin|raw.githubusercontent.com|/Allespro/armv7-android-tools/master/nano|nano
 yoangelo|bin|raw.githubusercontent.com|/inshalali809-netizen/KitKat-Terminal/main/packages/yoangelo|yoangelo
+proot|bin|skirsten.github.io|/proot-portable-android-binaries/armv7/proot|proot
+
+
